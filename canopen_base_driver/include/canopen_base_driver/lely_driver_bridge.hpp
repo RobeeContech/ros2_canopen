@@ -677,7 +677,10 @@ public:
       return true;
     }
     std::unique_lock<std::mutex> lck(boot_mtex);
-    boot_cond.wait(lck);
+    if (!boot_cond.wait_for(lck, std::chrono::seconds(5), [this]() { return booted.load(); }))
+    {
+      throw std::runtime_error("Timeout while waiting for device to boot");
+    }
     if ((boot_status != 0) && (boot_status != 'L'))
     {
       throw std::system_error(boot_status, LelyBridgeErrCategory(), "Boot Issue");
