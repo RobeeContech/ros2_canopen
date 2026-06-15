@@ -65,19 +65,19 @@ def generate_launch_description():
             launch.actions.LogInfo(msg=LaunchConfiguration("can_interface_name")),
         ]
     )
-    lifecycle_device_container_node = launch_ros.actions.LifecycleNode(
-        name="device_container_node",
-        namespace="",
-        package="canopen_core",
-        output="screen",
-        executable="device_container_node",
-        parameters=[
-            {"bus_config": LaunchConfiguration("bus_config")},
-            {"master_config": LaunchConfiguration("master_config")},
-            {"master_bin": LaunchConfiguration("master_bin")},
-            {"can_interface_name": LaunchConfiguration("can_interface_name")},
-        ],
-    )
+    lifecycle_device_container_node = launch_ros.actions.LifecycleNode(name="device_container_node",
+                                                                       namespace=LaunchConfiguration("namespace"),
+                                                                       package="canopen_core",
+                                                                       output="screen",
+                                                                       executable="device_container_node",
+                                                                       respawn=True,
+                                                                       respawn_delay=5.0,
+                                                                       parameters=[
+                                                                           {"bus_config": LaunchConfiguration("bus_config")},
+                                                                           {"master_config": LaunchConfiguration("master_config")},
+                                                                           {"master_bin": LaunchConfiguration("master_bin")},
+                                                                           {"can_interface_name": LaunchConfiguration("can_interface_name")},
+                                                                       ])
 
     ld.add_action(bus_conf_arg)
     ld.add_action(master_conf_arg)
