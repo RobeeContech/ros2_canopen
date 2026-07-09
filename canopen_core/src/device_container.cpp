@@ -332,6 +332,12 @@ bool DeviceContainer::load_manager()
     auto node_options = rclcpp::NodeOptions();
     node_options.use_global_arguments(false);
 
+    std::string can_ns = this->get_namespace();
+    if (can_ns == "/")
+    {
+      can_ns.clear();
+    }
+
     // Set parameters
     rclcpp::Parameter container_name("container_name", this->get_fully_qualified_name());
     std::vector<rclcpp::Parameter> params;
@@ -339,7 +345,8 @@ bool DeviceContainer::load_manager()
     node_options.parameter_overrides(params);
 
     // Instantiate Manager
-    this->lifecycle_manager_ = std::make_unique<ros2_canopen::LifecycleManager>(node_options);
+    this->lifecycle_manager_ =
+      std::make_unique<ros2_canopen::LifecycleManager>(node_options, can_ns);
 
     // Add to executor
     add_node_to_executor(this->lifecycle_manager_->get_node_base_interface());

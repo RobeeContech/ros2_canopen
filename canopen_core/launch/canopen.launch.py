@@ -56,6 +56,12 @@ def generate_launch_description():
         description="CAN interface used by master and drivers.",
     )
 
+    canopen_namespace_arg = DeclareLaunchArgument(
+        "canopen_namespace",
+        default_value=TextSubstitution(text=""),
+        description="ROS namespace for the CANopen container, manager, master, and drivers.",
+    )
+
     ld = launch.LaunchDescription()
     logging = launch.actions.GroupAction(
         actions=[
@@ -66,7 +72,7 @@ def generate_launch_description():
         ]
     )
     lifecycle_device_container_node = launch_ros.actions.LifecycleNode(name="device_container_node",
-                                                                       namespace=LaunchConfiguration("namespace"),
+                                                                       namespace=LaunchConfiguration("canopen_namespace"),
                                                                        package="canopen_core",
                                                                        output="screen",
                                                                        executable="device_container_node",
@@ -83,6 +89,7 @@ def generate_launch_description():
     ld.add_action(master_conf_arg)
     ld.add_action(master_bin_arg)
     ld.add_action(can_interface_name_arg)
+    ld.add_action(canopen_namespace_arg)
     ld.add_action(logging)
     ld.add_action(lifecycle_device_container_node)
 

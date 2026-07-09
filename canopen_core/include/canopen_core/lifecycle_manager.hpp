@@ -70,8 +70,9 @@ public:
    *
    * @param node_options
    */
-  LifecycleManager(const rclcpp::NodeOptions & node_options)
-  : rclcpp_lifecycle::LifecycleNode("lifecycle_manager", node_options)
+  LifecycleManager(
+    const rclcpp::NodeOptions & node_options, const std::string & node_namespace = "")
+  : rclcpp_lifecycle::LifecycleNode("lifecycle_manager", node_namespace, node_options)
   {
     this->declare_parameter("container_name", "");
     cbg_clients = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
